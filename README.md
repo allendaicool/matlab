@@ -19,3 +19,34 @@ function params = hw2trainbnb(X,Y)
     params.prior = class_prior;
 end
 
+
+function preds = hw2TestBnb(params,test)
+test = full(test);
+row_dim = size(test,1);
+class_size = length(params.prior);
+labels = zeros(1,row_dim);
+for i = 1:row_dim
+    max = -1;
+    class_index = -1;
+    
+    for j = 1 : class_size
+        temp_array_xj = test(i,:);
+        temp_array_prob = params.mle(j,:);
+        product_first = temp_array_prob.^temp_array_xj;
+        product_second = (1-temp_array_prob).^(1-temp_array_xj);
+        productTotal = prod(product_first)*prod(product_second)*params.prior(j);
+        if(productTotal>max)
+            max = productTotal;
+            class_index = j;
+        end
+    end
+    labels(1,i) = class_index;
+end
+preds = labels;
+end
+
+
+params = hw2trainbnb(data,labels);
+preds = hw2TestBnb(params,data);
+
+
